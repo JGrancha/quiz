@@ -1,0 +1,5 @@
+<p>Pregunta: <b> <%= quiz.pregunta %></b></p>
+<form action="/quizes/<%=quiz.id%>/answer" method="get">
+    <input type="text" name="respuesta"/>
+    <button>Enviar</button>
+</form>

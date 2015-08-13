@@ -3,22 +3,40 @@
  */
 
 var quizController = {};
-var models = require('../models/models.js')
+var models = require('../models/models.js');
 
-quizController.question = function(req,res){
-    models.Quiz.findAll().success(function(quiz){
-        res.render('quizes/question',{title: 'Quiz', pregunta: quiz[0].pregunta , text_Inicio: 'Inicio'});
-    });
-}
-
-quizController.answer = function(req,res){
-    models.Quiz.findAll().success(function(quiz){
-        if(req.query.respuesta === quiz[0].respuesta){
-            res.render('quizes/answer',{title: 'Quiz', respuesta:'¡Correcta!', text_Boton_Volver: 'Volver a jugar', text_Inicio: 'Inicio'})
-        }else{
-            res.render('quizes/answer',{title: 'Quiz', respuesta:'¡Incorrecta!', text_Boton_Volver: 'Volver a intentarlo', text_Inicio: 'Inicio'});
+quizController.load = function (req, res, next, quizId) {
+    models.Quiz.find(quizId).then(function (quiz) {
+        if (quiz) {
+            req.quiz = quiz;
+            next();
+        } else {
+            next(new Error('No existe ese quizId: ' + quizId));
         }
+    }).catch(function (error) {
+        next(error);
+    })
+};
+
+quizController.index = function (req, res) {
+    models.Quiz.findAll().then(function (quizes) {
+        res.render('quizes/index.ejs', {quizes: quizes});
     });
-}
+};
+
+quizController.show = function (req, res) {
+    res.render('quizes/show', {quiz: req.quiz});
+};
+
+quizController.answer = function (req, res) {
+    var respuesta = '¡Incorrecta!';
+    var textoBoton = 'Volver a intentarlo';
+
+    if (req.query.respuesta === req.quiz.respuesta) {
+        respuesta = '¡Correcta!';
+        textoBoton = 'Volver a jugar';
+    }
+    res.render('quizes/answer', {quiz: req.quiz, respuesta: respuesta, text_Boton_Volver: textoBoton})
+};
 
 module.exports = quizController;
