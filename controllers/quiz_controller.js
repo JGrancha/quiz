@@ -19,8 +19,16 @@ quizController.load = function (req, res, next, quizId) {
 };
 
 quizController.index = function (req, res) {
-    models.Quiz.findAll().then(function (quizes) {
-        res.render('quizes/index.ejs', {quizes: quizes});
+    var searchRequest = '%' + req.query.search + '%';
+    searchRequest.replace(' ','%');
+    models.Quiz.findAll({where: ['pregunta like ? order by pregunta asc', searchRequest]}).then(function (quizes) {
+        if(quizes.length > 0){
+            res.render('quizes/index.ejs', {quizes: quizes,cadena:''});
+        }else if(req.query.search == undefined){
+            res.render('quizes/index.ejs', {quizes: quizes, cadena:''});
+        }else{
+            res.render('quizes/index.ejs', {quizes: quizes, cadena:'No hemos encontrado nada con: ' + req.query.search});
+        }
     });
 };
 
