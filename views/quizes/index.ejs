@@ -1,5 +1,5 @@
 <table>
-    Introduzca texto para buscar preguntas<br/>
+    Introduzca texto para filtrar preguntas<br/>
 
     <form method="GET" action="/quizes">
         <input type="text" name="search"/><br/>
@@ -7,11 +7,13 @@
     </form>
     <h3><%= cadena %></h3>
 </table>
-<table>
+<br/>
+<table class="margin-auto">
     <% var i; for (i = 0;i < quizes.length ;i++) { %>
     <tr>
-        <td><%= quizes[i].tematica %> -> </td>
+        <td><%= quizes[i].tematica %> -></td>
         <td><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></td>
+        <% if(session.user) { %>
         <td><a href="quizes/<%= quizes[i].id %>/edit">
                 <button>Editar</button>
             </a></td>
@@ -20,9 +22,12 @@
                 <button onclick="return confirm('Borrar: <%= quizes[i].pregunta %>')">Borrar</button>
             </form>
         </td>
+        <% } %>
     </tr>
     <% } %>
 </table><br/>
+<% if (session.user) { %>
 <a href="/quizes/new">
     <button>Crear Pregunta</button>
 </a>
+<% } %>

@@ -6,7 +6,9 @@ var quizController = {};
 var models = require('../models/models.js');
 
 quizController.load = function (req, res, next, quizId) {
-    models.Quiz.find(quizId).then(function (quiz) {
+    models.Quiz.find({
+        where: {id: Number(quizId)}, include: [{model:models.Comment}]
+    }).then(function (quiz) {
         if (quiz) {
             req.quiz = quiz;
             next();
@@ -19,8 +21,14 @@ quizController.load = function (req, res, next, quizId) {
 };
 
 quizController.index = function (req, res) {
-    var searchRequest = '%' + req.query.search + '%';
-    searchRequest.replace(' ', '%');
+    var searchRequest;
+    if(req.query.search == undefined){
+        searchRequest = '%';
+    }else{
+        searchRequest = '%' + req.query.search + '%';
+        searchRequest.replace(' ', '%');
+    }
+    console.log(searchRequest);
     models.Quiz.findAll({where: ['pregunta like ? order by pregunta asc', searchRequest]}).then(function (quizes) {
         if (quizes.length > 0 || req.query.search == undefined) {
             res.render('quizes/index', {quizes: quizes, cadena: '', errors: []});
