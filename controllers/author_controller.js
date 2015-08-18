@@ -5,7 +5,7 @@
 var authorController = {};
 
 authorController.author = function (req, res) {
-    res.render('author/author', {title: 'Quiz', nombre: 'José', apellidos: 'Grancha Bonora'});
+    res.render('author/author', {title: 'Quiz', nombre: 'José', apellidos: 'Grancha Bonora', errors: []});
 }
 
 module.exports = authorController;

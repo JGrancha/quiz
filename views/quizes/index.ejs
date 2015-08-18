@@ -1,13 +1,28 @@
 <table>
-Introduzca texto para buscar preguntas<br>
-<form action="" method="GET">
-<input type="text" name="search"/><br>
-<button>Buscar</button>
-</form>
-<h3><%= cadena %></h3>
+    Introduzca texto para buscar preguntas<br/>
+
+    <form method="GET" action="/quizes">
+        <input type="text" name="search"/><br/>
+        <button>Buscar</button>
+    </form>
+    <h3><%= cadena %></h3>
 </table>
 <table>
-<% var i; for (i=0;i < quizes.length ;i++) { %>
-<tr><td><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></td></tr>
-<% } %>
-</table>
+    <% var i; for (i = 0;i < quizes.length ;i++) { %>
+    <tr>
+        <td><%= quizes[i].tematica %> -> </td>
+        <td><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></td>
+        <td><a href="quizes/<%= quizes[i].id %>/edit">
+                <button>Editar</button>
+            </a></td>
+        <td>
+            <form method="POST" action="quizes/<%= quizes[i].id %>/?_method=delete">
+                <button onclick="return confirm('Borrar: <%= quizes[i].pregunta %>')">Borrar</button>
+            </form>
+        </td>
+    </tr>
+    <% } %>
+</table><br/>
+<a href="/quizes/new">
+    <button>Crear Pregunta</button>
+</a>
